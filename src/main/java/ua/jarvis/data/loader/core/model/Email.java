@@ -32,6 +32,10 @@ public class Email extends BaseEntity {
 
 	public Email() {}
 
+	public Email(final String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -81,11 +85,11 @@ public class Email extends BaseEntity {
 			return false;
 		}
 		final Email email = (Email) o;
-		return Objects.equals(id, email.id) && Objects.equals(emailAddress, email.emailAddress);
+		return Objects.equals(emailAddress, email.emailAddress);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, emailAddress);
+		return Objects.hash(emailAddress);
 	}
 }

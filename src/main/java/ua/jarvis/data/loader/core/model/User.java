@@ -202,6 +202,10 @@ public class User extends BaseEntity {
 		this.emails = emails;
 	}
 
+	public void addEmail(final Email email){
+		this.emails.add(email);
+	}
+
 	public Set<DriverLicense> getDriverLicense() {
 		return driverLicense;
 	}
