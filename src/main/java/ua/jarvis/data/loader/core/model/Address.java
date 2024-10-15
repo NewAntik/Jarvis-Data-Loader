@@ -122,6 +122,10 @@ public class Address extends BaseEntity {
 		this.users = users;
 	}
 
+	public void addUser(final User user) {
+		this.users.add(user);
+	}
+
 	@Override
 	public String toString() {
 		return "Address{" +

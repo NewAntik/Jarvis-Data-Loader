@@ -1,6 +1,5 @@
 package ua.jarvis.data.loader.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ua.jarvis.data.loader.core.model.User;
 import ua.jarvis.data.loader.facade.ConvertorFacade;
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Component
 public class UserDataImporter {
-	private final String bankPath;
 
 	private final ConvertorFacade facade;
 
@@ -21,15 +19,14 @@ public class UserDataImporter {
 	public UserDataImporter(
 		final ConvertorFacade facade,
 		final UserService userService,
-		@Value("${bank.full.path}") final String bankPath,
 		final FileService fileService
 	) {
 		this.facade = facade;
 		this.userService = userService;
-		this.bankPath = bankPath;
 		this.fileService = fileService;
 	}
 
+	//todo check why it starts from 3rd line.
 	public void readAndSaveData() throws IOException {
 		List<String> lines;
 		while((lines = fileService.getLines()) != null){

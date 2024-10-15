@@ -16,35 +16,38 @@ import java.util.List;
 public class ConvertorFacadeImpl implements ConvertorFacade {
 	private static final Logger LOG = LoggerFactory.getLogger(ConvertorFacadeImpl.class);
 	private final List<UserConverter> converters;
-
-	private final EnumMap<ConvertorType, UserConverter> executorRegistry = new EnumMap<>(ConvertorType.class);
+//todo clean
+//private final EnumMap<ConvertorType, UserConverter> executorRegistry = new EnumMap<>(ConvertorType.class);
 
 	public ConvertorFacadeImpl(final List<UserConverter> converters) {
 		this.converters = converters;
 	}
 
-	@PostConstruct
-	protected void populateExecutorRegistry() {
-		for (final UserConverter converter : converters) {
-			final UserConverter alreadyRegistered = executorRegistry.put(converter.getType(), converter);
-
-			if (alreadyRegistered != null) {
-				throw new IllegalArgumentException(
-					"Duplicate convertor found: {}" + alreadyRegistered.getType()
-				);
-			}
-		}
-	}
+//	@PostConstruct
+//	protected void populateExecutorRegistry() {
+//		for (final UserConverter converter : converters) {
+//			final UserConverter alreadyRegistered = executorRegistry.put(converter.getType(), converter);
+//
+//			if (alreadyRegistered != null) {
+//				throw new IllegalArgumentException(
+//					"Duplicate convertor found: {}" + alreadyRegistered.getType()
+//				);
+//			}
+//		}
+//	}
 
 	@Override
 	public List<User> convert(final List<String> lines) {
 		LOG.info("ConvertorFacadeImpl was called with lines: {}", lines);
 		UserConverter converter = null;
 		final List<User> users;
-		for(final UserConverter conv : converters){
-			final boolean isConverter = conv.getType().getValue().equals(lines.get(0));
-			if(isConverter){
-				converter = conv;
+		if(converter == null){
+			for(final UserConverter conv : converters){
+				final String firstLine = lines.get(0);
+				final boolean isConverter = conv.getType().getValue().equals(firstLine);
+				if(isConverter){
+					converter = conv;
+				}
 			}
 		}
 

@@ -230,6 +230,10 @@ public class User extends BaseEntity {
 		this.phones = phones;
 	}
 
+	public void addPhone(final Phone phone) {
+		this.phones.add(phone);
+	}
+
 	public Set<ForeignPassport> getForeignPassports() {
 		return foreignPassports;
 	}
@@ -252,6 +256,10 @@ public class User extends BaseEntity {
 
 	public void setAddresses(final Set<Address> addresses) {
 		this.addresses = addresses;
+	}
+
+	public void addAddress(final Address address) {
+		this.addresses.add(address);
 	}
 
 	public Set<Car> getCars() {

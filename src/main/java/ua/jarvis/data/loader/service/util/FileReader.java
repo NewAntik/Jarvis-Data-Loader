@@ -16,9 +16,9 @@ public final class FileReader {
 	private FileReader() {
 	}
 
-	public static List<String> read(final String filePath, final Long startLine, final Long batchSize) throws IOException{
-		if (startLine < 1) {
-			throw new IllegalArgumentException("Start line must be 1 or greater");
+	public static List<String> read(final String filePath, Long startLine, final Long batchSize) throws IOException{
+		if (startLine == 0) {
+			startLine = 1L;
 		}
 		int currentLine = 0;
 
