@@ -52,11 +52,58 @@ public class Address extends BaseEntity {
 	@JoinColumn(name = "juridical_person_id")
 	private JuridicalPerson juridicalPerson;
 
+	@Size(max = 50)
+	@Column(length = 50, name = "district")
+	private String district;
+
+	@Size(max = 50)
+	@Column(length = 50, name = "corpus")
+	private String corpus;
+
+	@Size(max = 50)
+	@Column(length = 50, name = "other")
+	private String other;
+
+	@Column(name = "other_num")
+	private String otherNum;
+
 	@NotNull
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<User> users = new HashSet<>();
 
 	public Address() {}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(final String district) {
+		this.district = district;
+	}
+
+	public String getCorpus() {
+		return corpus;
+	}
+
+	public void setCorpus(final String corpus) {
+		this.corpus = corpus;
+	}
+
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(final String other) {
+		this.other = other;
+	}
+
+	public String getOtherNum() {
+		return otherNum;
+	}
+
+	private void setOtherNum(final String otherNum) {
+		this.otherNum = otherNum;
+	}
 
 	public String getRegion() {
 		return region;

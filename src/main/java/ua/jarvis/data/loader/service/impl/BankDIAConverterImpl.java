@@ -70,7 +70,7 @@ public class BankDIAConverterImpl implements UserConverter {
 			if(lineArray[8] != null){
 				addAddress();
 			}
-
+			//todo what else ?
 		}
 
 		return users;
@@ -86,43 +86,77 @@ public class BankDIAConverterImpl implements UserConverter {
 		user.addAddress(address);
 	}
 
-//todo add logic wiht:
-// "смт", "с."
-// "інше", "проспект", "провулок", "бульвар", "шосе", "мікрорайон"
-//
-// в району може не бути приписки р-н
-//м.Київ,  Голосіївський, вулиця Велика Китаївська , 92/98, корп. 1, кв. 310.
 	private void setAddressData(final String[] addressParts, final Address address, final int index){
 		final String addressPart = addressParts[index];
-		if(addressPart.contains("обл.")){
-			final String cleaned = addressPart.replace("обл.", "").trim();
+		if(addressPart.toLowerCase().contains("обл")){
+			final String cleaned = addressPart.replace("(?i)обл\\.?", "").trim();
 			address.setRegion(cleaned);
 		}
-		if(addressPart.contains("м.")){
-			final String cleaned = addressPart.replace("м.", "").trim();
+		if(addressPart.toLowerCase().contains("м")){
+			final String cleaned = addressPart.replace("(?i)м\\.?", "").trim();
 			address.setCity(cleaned);
 		}
-		if(addressPart.contains("р-н")){
-			final String cleaned = addressPart.replace("р-н", "").trim();
+		if(addressPart.toLowerCase().contains("с")){
+			final String cleaned = addressPart.replace("(?i)с\\.?", "").trim();
 			address.setCity(cleaned);
 		}
-
-		if(addressPart.contains("вулиця")){
-			final String cleaned = addressPart.replace("вулиця.", "").trim();
+		if(addressPart.toLowerCase().contains("смт")){
+			final String cleaned = addressPart.replace("(?i)смт\\.?", "").trim();
+			address.setCity(cleaned);
+		}
+		if(addressPart.toLowerCase().contains("р-н")){
+			final String cleaned = addressPart.replace("(?i)р-н\\.?", "").trim();
+			address.setDistrict(cleaned);
+		}
+		if(addressPart.toLowerCase().contains("корпус")){
+			final String cleaned = addressPart.replace("(?i)корпус\\.?", "").trim();
+			address.setCorpus(cleaned);
+		}
+		if(addressPart.toLowerCase().contains("інше")){
+			final String cleaned = addressPart.replace("(?i)інше\\.?", "").trim();
+			address.setOther(cleaned);
+			setNum(addressParts, address, index);
+		}
+		if(addressPart.toLowerCase().contains("вулиця")){
+			final String cleaned = addressPart.replace("(?i)вулиця\\.?", "").trim();
 			address.setStreet(cleaned);
 			setNum(addressParts, address, index);
 		}
-
-		if(addressPart.contains("вулиця")){
-			final String cleaned = addressPart.replace("вулиця.", "").trim();
+		if(addressPart.toLowerCase().contains("проспект")){
+			final String cleaned = addressPart.replace("(?i)проспект\\.?", "").trim();
+			address.setStreet(cleaned);
+			setNum(addressParts, address, index);
+		}
+		if(addressPart.toLowerCase().contains("провулок")){
+			final String cleaned = addressPart.replace("(?i)провулок\\.?", "").trim();
+			address.setStreet(cleaned);
+			setNum(addressParts, address, index);
+		}
+		if(addressPart.toLowerCase().contains("бульвар")){
+			final String cleaned = addressPart.replace("(?i)бульвар\\.?", "").trim();
+			address.setStreet(cleaned);
+			setNum(addressParts, address, index);
+		}
+		if(addressPart.toLowerCase().contains("шосе")){
+			final String cleaned = addressPart.replace("(?i)шосе\\.?", "").trim();
+			address.setStreet(cleaned);
+			setNum(addressParts, address, index);
+		}
+		if(addressPart.toLowerCase().contains("мікрорайон")){
+			final String cleaned = addressPart.replace("(?i)мікрорайон\\.?", "").trim();
 			address.setStreet(cleaned);
 			setNum(addressParts, address, index);
 		}
 	}
 
 	private void setNum(final String[] addressParts, final Address address, final int index){
-		if(addressParts.length >= (index+1)){
-			address.setHomeNumber(addressParts[(index + 1)]);
+		final int next = index + 1;
+		if(addressParts.length >= next && isNum(addressParts[next])){
+			address.setHomeNumber(addressParts[next]);
 		}
+	}
+
+	private boolean isNum(final String inputString){
+		return inputString.matches(".*\\d+.*");
 	}
 }
