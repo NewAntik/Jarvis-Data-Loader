@@ -1,5 +1,6 @@
 package ua.jarvis.data.loader.core.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -45,7 +46,6 @@ public class User extends BaseEntity {
 	@Column(length = 10, name = "rnokpp")
 	private String rnokpp;
 
-	@Size(max = 10)
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10, name = "sex")
 	private Sex sex;
@@ -54,13 +54,16 @@ public class User extends BaseEntity {
 	@Column(length = 500, name = "illegal_actions")
 	private String illegalActions;
 
-	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+	@Column(name = "is_individual_entrepreneur")
+	private boolean isIndividualEntrepreneur;
+
+	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private BirthCertificate birthCertificate;
 
-	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private Photo photo;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(
 		name = "user_siblings",
 		joinColumns = @JoinColumn(name = "user_id"),
@@ -68,37 +71,61 @@ public class User extends BaseEntity {
 	)
 	private Set<User> siblings = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<User> children = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<User> parents = new HashSet<>();
 
-	@ManyToMany(mappedBy = "drivers", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "drivers", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<Car> cars = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<JuridicalPerson> juridicalPersons = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<Passport> passports = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<DriverLicense> driverLicense = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<ForeignPassport> foreignPassports = new HashSet<>();
 
-	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<Address> addresses = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<Email> emails = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<Phone> phones = new HashSet<>();
 
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinTable(
+		name = "individual_entrepreneur_addresses",
+		joinColumns = @JoinColumn(name = "individual_entrepreneur_id"),
+		inverseJoinColumns = @JoinColumn(name = "addresses_id")
+	)
+	private Set<Address> individualEntrepreneurAddresses = new HashSet<>();
+
 	public User() {}
+
+	public boolean isIsIndividualEntrepreneur() {
+		return isIndividualEntrepreneur;
+	}
+
+	public void setIsIndividualEntrepreneur(final boolean isiIndividualEntrepreneur) {
+		this.isIndividualEntrepreneur = isiIndividualEntrepreneur;
+	}
+
+	public Set<Address> getIndividualEntrepreneurAddresses() {
+		return individualEntrepreneurAddresses;
+	}
+
+	public void setIndividualEntrepreneurAddresses(final Set<Address> isiIndividualEntrepreneurAddresses) {
+		this.individualEntrepreneurAddresses = isiIndividualEntrepreneurAddresses;
+	}
 
 	public Set<User> getSiblings() {
 		return siblings;
@@ -202,10 +229,6 @@ public class User extends BaseEntity {
 		this.emails = emails;
 	}
 
-	public void addEmail(final Email email){
-		this.emails.add(email);
-	}
-
 	public Set<DriverLicense> getDriverLicense() {
 		return driverLicense;
 	}
@@ -228,10 +251,6 @@ public class User extends BaseEntity {
 
 	public void setPhones(final Set<Phone> phones) {
 		this.phones = phones;
-	}
-
-	public void addPhone(final Phone phone) {
-		this.phones.add(phone);
 	}
 
 	public Set<ForeignPassport> getForeignPassports() {
@@ -258,16 +277,24 @@ public class User extends BaseEntity {
 		this.addresses = addresses;
 	}
 
-	public void addAddress(final Address address) {
-		this.addresses.add(address);
-	}
-
 	public Set<Car> getCars() {
 		return cars;
 	}
 
 	public void setCars(final Set<Car> cars) {
 		this.cars = cars;
+	}
+
+	public void addEmail(final Email email) {
+		this.emails.add(email);
+	}
+
+	public void addPhone(final Phone phone) {
+		this.phones.add(phone);
+	}
+
+	public void addAddress(final Address address) {
+		this.addresses.add(address);
 	}
 
 	@Override

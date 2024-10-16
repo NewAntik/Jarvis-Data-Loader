@@ -6,17 +6,21 @@ import org.springframework.stereotype.Component;
 import ua.jarvis.data.loader.core.model.Address;
 import ua.jarvis.data.loader.core.model.BirthCertificate;
 import ua.jarvis.data.loader.core.model.Email;
+import ua.jarvis.data.loader.core.model.Passport;
 import ua.jarvis.data.loader.core.model.Phone;
 import ua.jarvis.data.loader.core.model.User;
 import ua.jarvis.data.loader.core.model.enums.ConvertorType;
 import ua.jarvis.data.loader.service.UserConverter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class BankDIAConverterImpl implements UserConverter {
 	private static final Logger LOG = LoggerFactory.getLogger(BankDIAConverterImpl.class);
+	private static final DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	private String[] lineArray;
 
@@ -29,51 +33,95 @@ public class BankDIAConverterImpl implements UserConverter {
 
 	@Override
 	public List<User> convert(final List<String> lines) {
-		LOG.info("BankDIAConverterImpl.convert(lines) was called with lines: {}", lines);
+		LOG.info("BankDIAConverterImpl.convert(lines) was called with {} lines", lines.size());
 		final List<User> users = new ArrayList<>();
-		//todo continue converting
-		for(int i = 3; i < lines.size();){
+		for(int i = 0; i < lines.size(); i++){
 			lineArray = lines.get(i).split("\\|");
 			user = new User();
 
-			if(lineArray[1] != null){
+			if(checkArrayLength(2) && checkString(lineArray[1])){
 				user.addEmail(new Email(lineArray[1]));
 			}
-			if(lineArray[2] != null){
+			if(checkArrayLength(3) && checkString(lineArray[2])){
 				user.setName(lineArray[2]);
 			}
-			if(lineArray[3] != null){
+			if(checkArrayLength(4) && checkString(lineArray[3])){
 				user.setSurName(lineArray[3]);
 			}
-			if(lineArray[4] != null){
+			if(checkArrayLength(5) && checkString(lineArray[4])){
 				user.setMiddleName(lineArray[4]);
 			}
-			if(lineArray[5] != null && !lineArray[5].equals("0")){
-				final String[] dateParts = lineArray[5].split("-");
-				final BirthCertificate certificate = new BirthCertificate();
-				certificate.setYear(dateParts[0]);
-				certificate.setMonth(dateParts[1]);
-				certificate.setDay(dateParts[3]);
-				certificate.setUser(user);
-				user.setBirthCertificate(certificate);
+			if(checkArrayLength(6) && checkString(lineArray[5])){
+				addBirthCertificate();
 			}
-			if(lineArray[6] != null){
+			if(checkArrayLength(7) && checkString(lineArray[6])){
 				final Phone phone = new Phone();
-				phone.setNumber(lineArray[6]);
+
+				if(lineArray[6].length() > 10){
+					phone.setNumber(getNormalizedPhoneNumber(lineArray[6]));
+				}else{
+					phone.setNumber(lineArray[6]);
+				}
+
 				phone.setUser(user);
 				user.addPhone(phone);
 			}
-			if(lineArray[7] != null){
+			if(checkArrayLength(8) && checkString(lineArray[7]) && lineArray[7].length() == 10){
 				user.setRnokpp(lineArray[7]);
 			}
 
-			if(lineArray[8] != null){
+			if(checkArrayLength(9) && checkString(lineArray[8])){
 				addAddress();
 			}
-			//todo what else ?
+
+			if(lineArray.length > 9){
+				addPassport();
+			}
+			if(!isEmptyUser()){
+				users.add(user);
+			}
 		}
 
 		return users;
+	}
+
+	private void addBirthCertificate(){
+		final String[] dateParts = lineArray[5].split("-");
+		final BirthCertificate certificate = new BirthCertificate();
+
+		if(dateParts.length == 1){
+			certificate.setYear(dateParts[0]);
+		}
+		if(dateParts.length == 2){
+			certificate.setYear(dateParts[1]);
+		}
+		if(dateParts.length == 3){
+			certificate.setYear(dateParts[2]);
+		}
+
+		certificate.setUser(user);
+		user.setBirthCertificate(certificate);
+	}
+
+	private void addPassport(){
+		final Passport passport = new Passport();
+		passport.setUser(user);
+
+		if(checkString(lineArray[9])){
+			passport.setPassportNumber(lineArray[9]);
+		}
+		if(checkArrayLength(11) && checkString(lineArray[10])){
+			if(passport.getPassportNumber() != null){
+				passport.setPassportNumber(passport.getPassportNumber() + lineArray[10]);
+			}
+			passport.setPassportNumber( lineArray[10]);
+		}
+		if(checkArrayLength(12) && checkString(lineArray[11])){
+			passport.setIssueDate(LocalDate.parse(lineArray[11], DATEFORMATTER).atStartOfDay());
+		}
+		if(checkArrayLength(13) && checkString(lineArray[12])){
+			passport.setAuthority(lineArray[12]);
+		}
 	}
 
 	private void addAddress(){
@@ -158,5 +206,40 @@ public class BankDIAConverterImpl implements UserConverter {
 
 	private boolean isNum(final String inputString){
 		return inputString.matches(".*\\d+.*");
+	}
+
+	private boolean checkString(final String inputString){
+		return inputString != null &&
+			!inputString.equals("0") &&
+			!inputString.isBlank() &&
+			!inputString.equals("null") &&
+			!inputString.equals("\"\"");
+	}
+
+	private boolean checkArrayLength(final int i){
+		return lineArray.length >= i;
+	}
+
+	@SuppressWarnings("checkstyle:FinalParameters")
+	private String getNormalizedPhoneNumber(String number) {
+		String normalizedNumber = null;
+		number = number.replaceAll("[^\\d]", "");
+
+		if (number.startsWith("38")) {
+			number = number.substring(2);
+		} else if (number.startsWith("8")) {
+			number = number.substring(1);
+		}
+
+		if (number.length() == 10) {
+			normalizedNumber = number;
+		}
+
+		return normalizedNumber;
+	}
+
+	public boolean isEmptyUser(){
+		return user.getName() == null && user.getMiddleName() == null && user.getSurName() == null &&
+			user.getRnokpp() == null;
 	}
 }

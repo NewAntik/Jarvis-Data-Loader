@@ -5,5 +5,5 @@ import ua.jarvis.data.loader.core.model.User;
 import java.util.List;
 
 public interface UserService {
-	void saveUsers(List<User> users);
+	Long saveUsers(List<User> users);
 }

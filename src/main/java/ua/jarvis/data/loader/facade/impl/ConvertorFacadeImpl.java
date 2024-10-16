@@ -1,45 +1,29 @@
 package ua.jarvis.data.loader.facade.impl;
 
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ua.jarvis.data.loader.core.model.User;
-import ua.jarvis.data.loader.core.model.enums.ConvertorType;
 import ua.jarvis.data.loader.facade.ConvertorFacade;
 import ua.jarvis.data.loader.service.UserConverter;
 
-import java.util.EnumMap;
 import java.util.List;
 
 @Component
 public class ConvertorFacadeImpl implements ConvertorFacade {
 	private static final Logger LOG = LoggerFactory.getLogger(ConvertorFacadeImpl.class);
+
 	private final List<UserConverter> converters;
-//todo clean
-//private final EnumMap<ConvertorType, UserConverter> executorRegistry = new EnumMap<>(ConvertorType.class);
+
+	private UserConverter converter;
 
 	public ConvertorFacadeImpl(final List<UserConverter> converters) {
 		this.converters = converters;
 	}
 
-//	@PostConstruct
-//	protected void populateExecutorRegistry() {
-//		for (final UserConverter converter : converters) {
-//			final UserConverter alreadyRegistered = executorRegistry.put(converter.getType(), converter);
-//
-//			if (alreadyRegistered != null) {
-//				throw new IllegalArgumentException(
-//					"Duplicate convertor found: {}" + alreadyRegistered.getType()
-//				);
-//			}
-//		}
-//	}
-
 	@Override
 	public List<User> convert(final List<String> lines) {
-		LOG.info("ConvertorFacadeImpl was called with lines: {}", lines);
-		UserConverter converter = null;
+		LOG.info("ConvertorFacadeImpl was called with {} lines", lines.size());
 		final List<User> users;
 		if(converter == null){
 			for(final UserConverter conv : converters){
@@ -47,6 +31,7 @@ public class ConvertorFacadeImpl implements ConvertorFacade {
 				final boolean isConverter = conv.getType().getValue().equals(firstLine);
 				if(isConverter){
 					converter = conv;
+					lines.remove(lines.get(0));
 				}
 			}
 		}

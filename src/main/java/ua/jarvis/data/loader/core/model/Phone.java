@@ -1,5 +1,6 @@
 package ua.jarvis.data.loader.core.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "phones")
-public class Phone {
+public class Phone extends BaseEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,7 @@ public class Phone {
 	@ManyToOne
 	private JuridicalPerson juridicalPerson;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private User user;
 
 	public Phone() {}

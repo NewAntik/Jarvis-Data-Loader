@@ -1,5 +1,6 @@
 package ua.jarvis.data.loader.core.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,15 +20,14 @@ public class Email extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
 	@Size(max = 100)
 	@Column(length = 100, name = "email_address")
 	private String emailAddress;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private User user;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private JuridicalPerson juridicalPerson;
 
 	public Email() {}

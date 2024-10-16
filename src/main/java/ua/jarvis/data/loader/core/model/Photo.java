@@ -25,17 +25,14 @@ public class Photo extends BaseEntity{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
 	@JdbcTypeCode(SqlTypes.VARCHAR)
 	@Column(name = "UUID", length = 36, columnDefinition = "varchar")
 	private UUID uuid;
 
-	@NotBlank
 	@Column(name = "file_name")
 	@Size(max = 255)
 	private String fileName;
 
-	@NotNull
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;

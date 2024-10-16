@@ -18,7 +18,7 @@ public class FileServiceImpl implements FileService {
 
 	private final Long batchSize;
 
-	private Long lineNumber = 0L;
+	private Long lineNumber = 1L;
 
 	public FileServiceImpl(
 		@Value("${bank.full.path}") final String bankPath,

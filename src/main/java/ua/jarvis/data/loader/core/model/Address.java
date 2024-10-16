@@ -7,11 +7,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
@@ -26,12 +23,10 @@ public class Address extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
 	@Size(max = 50)
 	@Column(length = 50, name = "region")
 	private String region;
 
-	@NotNull
 	@Size(max = 50)
 	@Column(length = 50, name = "city")
 	private String city;
@@ -48,10 +43,6 @@ public class Address extends BaseEntity {
 	@Column(length = 50, name = "flat_number")
 	private String flatNumber;
 
-	@OneToOne
-	@JoinColumn(name = "juridical_person_id")
-	private JuridicalPerson juridicalPerson;
-
 	@Size(max = 50)
 	@Column(length = 50, name = "district")
 	private String district;
@@ -67,43 +58,13 @@ public class Address extends BaseEntity {
 	@Column(name = "other_num")
 	private String otherNum;
 
-	@NotNull
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<JuridicalPerson> juridicalPersons = new HashSet<>();
+
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<User> users = new HashSet<>();
 
 	public Address() {}
-
-	public String getDistrict() {
-		return district;
-	}
-
-	public void setDistrict(final String district) {
-		this.district = district;
-	}
-
-	public String getCorpus() {
-		return corpus;
-	}
-
-	public void setCorpus(final String corpus) {
-		this.corpus = corpus;
-	}
-
-	public String getOther() {
-		return other;
-	}
-
-	public void setOther(final String other) {
-		this.other = other;
-	}
-
-	public String getOtherNum() {
-		return otherNum;
-	}
-
-	private void setOtherNum(final String otherNum) {
-		this.otherNum = otherNum;
-	}
 
 	public String getRegion() {
 		return region;
@@ -113,12 +74,12 @@ public class Address extends BaseEntity {
 		this.region = region;
 	}
 
-	public JuridicalPerson getJuridicalPerson() {
-		return juridicalPerson;
+	public Set<JuridicalPerson> getJuridicalPersons() {
+		return juridicalPersons;
 	}
 
-	public void setJuridicalPerson(final JuridicalPerson juridicalPerson) {
-		this.juridicalPerson = juridicalPerson;
+	public void setJuridicalPersons(final Set<JuridicalPerson> juridicalPersons) {
+		this.juridicalPersons = juridicalPersons;
 	}
 
 	public Long getId() {
@@ -173,6 +134,38 @@ public class Address extends BaseEntity {
 		this.users.add(user);
 	}
 
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(final String district) {
+		this.district = district;
+	}
+
+	public String getCorpus() {
+		return corpus;
+	}
+
+	public void setCorpus(final String corpus) {
+		this.corpus = corpus;
+	}
+
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(final String other) {
+		this.other = other;
+	}
+
+	public String getOtherNum() {
+		return otherNum;
+	}
+
+	public void setOtherNum(final String otherNum) {
+		this.otherNum = otherNum;
+	}
+
 	@Override
 	public String toString() {
 		return "Address{" +
@@ -182,6 +175,12 @@ public class Address extends BaseEntity {
 			", street='" + street + '\'' +
 			", homeNumber='" + homeNumber + '\'' +
 			", flatNumber='" + flatNumber + '\'' +
+			", district='" + district + '\'' +
+			", corpus='" + corpus + '\'' +
+			", other='" + other + '\'' +
+			", otherNum=" + otherNum +
+			", juridicalPersons=" + juridicalPersons +
+			", users=" + users +
 			'}';
 	}
 
@@ -194,12 +193,17 @@ public class Address extends BaseEntity {
 			return false;
 		}
 		final Address address = (Address) o;
-		return Objects.equals(id, address.id) &&
-			Objects.equals(region, address.region) &&
+		return Objects.equals(region, address.region) &&
 			Objects.equals(city, address.city) &&
 			Objects.equals(street, address.street) &&
 			Objects.equals(homeNumber, address.homeNumber) &&
-			Objects.equals(flatNumber, address.flatNumber);
+			Objects.equals(flatNumber, address.flatNumber) &&
+			Objects.equals(district, address.district) &&
+			Objects.equals(corpus, address.corpus) &&
+			Objects.equals(other, address.other) &&
+			Objects.equals(otherNum, address.otherNum) &&
+			Objects.equals(juridicalPersons, address.juridicalPersons) &&
+			Objects.equals(users, address.users);
 	}
 
 	@Override

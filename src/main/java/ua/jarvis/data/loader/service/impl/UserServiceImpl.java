@@ -9,6 +9,7 @@ import ua.jarvis.data.loader.repository.UserRepository;
 import ua.jarvis.data.loader.service.UserService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 
-	private Set<String> rnokpps;
+	private Set<String> rnokpps = new HashSet<>();
 
 	public UserServiceImpl(final UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -27,17 +28,27 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public void saveUsers(final List<User> users) {
-		LOG.info("saveUsers was called with users: {}", users);
-		final List<User> sortedUsers = new ArrayList<>();
+	public Long saveUsers(final List<User> users) {
+		Long duplicates = 0L;
+		final Set<String> allRnokpps = users.stream().map(User::getRnokpp).collect(Collectors.toSet());
 
-		rnokpps = users.stream().map(User::getRnokpp).collect(Collectors.toSet());
-		sortedUsers.addAll(users.stream()
+		for (final String rnokpp : allRnokpps) {
+			if (rnokpps.contains(rnokpp)) {
+				duplicates++;
+			} else {
+				rnokpps.add(rnokpp);
+			}
+		}
+		final List<User> sortedUsers = users.stream()
 			.filter(u -> rnokpps.contains(u.getRnokpp()))
-			.toList());
+			.toList();
+
+		duplicates = (long) (users.size() - sortedUsers.size());
 
 		userRepository.saveAllAndFlush(sortedUsers);
 
 		LOG.info("{} users was saved!", rnokpps.size());
+
+		return duplicates;
 	}
 }
