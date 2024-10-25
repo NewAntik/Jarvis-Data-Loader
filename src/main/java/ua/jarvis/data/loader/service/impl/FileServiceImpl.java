@@ -32,7 +32,7 @@ public class FileServiceImpl implements FileService {
 	public List<String> getLines() throws IOException {
 		final List<String> lines = FileReader.read(bankPath, lineNumber, batchSize);
 		lineNumber += batchSize;
-		LOG.info("Was loaded {} lines.", lineNumber);
+		LOG.info("Was loaded {} lines.", lines.size());
 
 		return lines;
 	}

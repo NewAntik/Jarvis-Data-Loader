@@ -10,14 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import ua.jarvis.data.loader.core.model.enums.CategoryType;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "driver_license_categories")
-public class DriverLicenseCategory extends BaseEntity{
+public class DriverLicenseCategory extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

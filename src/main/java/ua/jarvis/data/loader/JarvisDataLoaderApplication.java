@@ -14,12 +14,6 @@ public class JarvisDataLoaderApplication {
 
 	@Bean
 	CommandLineRunner run(final UserDataImporter userDataImporter) {
-		return args -> {
-//			try {
-				userDataImporter.readAndSaveData();
-//			} catch (final Exception e) {
-//				e.printStackTrace(); // Handle your exceptions properly here
-//			}
-		};
+		return args -> userDataImporter.readAndSaveData();
 	}
 }

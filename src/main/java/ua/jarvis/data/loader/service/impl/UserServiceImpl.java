@@ -8,7 +8,6 @@ import ua.jarvis.data.loader.core.model.User;
 import ua.jarvis.data.loader.repository.UserRepository;
 import ua.jarvis.data.loader.service.UserService;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

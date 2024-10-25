@@ -117,9 +117,9 @@ public class BirthCertificate extends DocumentEntity {
 			", birthAddress=" + birthAddress +
 			", issueDate=" + issueDate +
 			", validUntil=" + validUntil +
-			", isValid=" + isValid +
+			", valid=" + valid +
 			", authority='" + authority + '\'' +
-			", isUnlimited=" + isUnlimited +
+			", unlimited=" + unlimited +
 			'}';
 	}
 

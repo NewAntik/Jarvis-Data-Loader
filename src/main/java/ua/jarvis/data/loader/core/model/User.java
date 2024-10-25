@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import ua.jarvis.data.loader.core.model.enums.BooleanType;
 import ua.jarvis.data.loader.core.model.enums.Sex;
 
 import java.util.HashSet;
@@ -54,8 +55,9 @@ public class User extends BaseEntity {
 	@Column(length = 500, name = "illegal_actions")
 	private String illegalActions;
 
-	@Column(name = "is_individual_entrepreneur")
-	private boolean isIndividualEntrepreneur;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 7, name = "individual_entrepreneur")
+	private BooleanType individualEntrepreneur;
 
 	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private BirthCertificate birthCertificate;
@@ -111,12 +113,12 @@ public class User extends BaseEntity {
 
 	public User() {}
 
-	public boolean isIsIndividualEntrepreneur() {
-		return isIndividualEntrepreneur;
+	public BooleanType getIndividualEntrepreneur() {
+		return individualEntrepreneur;
 	}
 
-	public void setIsIndividualEntrepreneur(final boolean isiIndividualEntrepreneur) {
-		this.isIndividualEntrepreneur = isiIndividualEntrepreneur;
+	public void setIndividualEntrepreneur(final BooleanType individualEntrepreneur) {
+		this.individualEntrepreneur = individualEntrepreneur;
 	}
 
 	public Set<Address> getIndividualEntrepreneurAddresses() {

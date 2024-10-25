@@ -64,9 +64,9 @@ public class Passport extends DocumentEntity{
 			", user=" + user +
 			", issueDate=" + issueDate +
 			", validUntil=" + validUntil +
-			", isValid=" + isValid +
+			", valid=" + valid +
 			", authority='" + authority + '\'' +
-			", isUnlimited=" + isUnlimited +
+			", unlimited=" + unlimited +
 			'}';
 	}
 
