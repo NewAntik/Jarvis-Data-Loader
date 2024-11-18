@@ -6,8 +6,11 @@ import org.springframework.stereotype.Component;
 import ua.jarvis.data.loader.core.model.Address;
 import ua.jarvis.data.loader.core.model.BirthCertificate;
 import ua.jarvis.data.loader.core.model.Email;
+import ua.jarvis.data.loader.core.model.FirstName;
+import ua.jarvis.data.loader.core.model.MiddleName;
 import ua.jarvis.data.loader.core.model.Passport;
 import ua.jarvis.data.loader.core.model.Phone;
+import ua.jarvis.data.loader.core.model.SurName;
 import ua.jarvis.data.loader.core.model.User;
 import ua.jarvis.data.loader.core.model.enums.ConvertorType;
 import ua.jarvis.data.loader.service.UserConverter;
@@ -35,49 +38,55 @@ public class BankDIAConverterImpl implements UserConverter {
 	public List<User> convert(final List<String> lines) {
 		LOG.info("BankDIAConverterImpl.convert(lines) was called with {} lines", lines.size());
 		final List<User> users = new ArrayList<>();
-		for(int i = 0; i < lines.size(); i++){
-			lineArray = lines.get(i).split("\\|");
+		for (final String line : lines) {
+			lineArray = line.split("\\|");
 			user = new User();
 
-			if(checkArrayLength(2) && checkString(lineArray[1])){
+			if (checkArrayLength(2) && checkString(lineArray[1])) {
 				user.addEmail(new Email(lineArray[1]));
 			}
-			if(checkArrayLength(3) && checkString(lineArray[2])){
-				user.setName(lineArray[2]);
+			if (checkArrayLength(3) && checkString(lineArray[2])) {
+				final FirstName firstName = new FirstName(lineArray[2]);
+				firstName.setUser(user);
+				user.getFirstNames().add(firstName);
 			}
-			if(checkArrayLength(4) && checkString(lineArray[3])){
-				user.setSurName(lineArray[3]);
+			if (checkArrayLength(4) && checkString(lineArray[3])) {
+				final SurName surName = new SurName(lineArray[3]);
+				surName.setUser(user);
+				user.getSurNames().add(surName);
 			}
-			if(checkArrayLength(5) && checkString(lineArray[4])){
-				user.setMiddleName(lineArray[4]);
+			if (checkArrayLength(5) && checkString(lineArray[4])) {
+				final MiddleName middleName = new MiddleName(lineArray[4]);
+				middleName.setUser(user);
+				user.getMiddleNames().add(middleName);
 			}
-			if(checkArrayLength(6) && checkString(lineArray[5])){
+			if (checkArrayLength(6) && checkString(lineArray[5])) {
 				addBirthCertificate();
 			}
-			if(checkArrayLength(7) && checkString(lineArray[6])){
+			if (checkArrayLength(7) && checkString(lineArray[6])) {
 				final Phone phone = new Phone();
 
-				if(lineArray[6].length() > 10){
+				if (lineArray[6].length() > 10) {
 					phone.setNumber(getNormalizedPhoneNumber(lineArray[6]));
-				}else{
+				} else {
 					phone.setNumber(lineArray[6]);
 				}
 
 				phone.setUser(user);
 				user.addPhone(phone);
 			}
-			if(checkArrayLength(8) && checkString(lineArray[7]) && lineArray[7].length() == 10){
+			if (checkArrayLength(8) && checkString(lineArray[7]) && lineArray[7].length() == 10) {
 				user.setRnokpp(lineArray[7]);
 			}
 
-			if(checkArrayLength(9) && checkString(lineArray[8])){
+			if (checkArrayLength(9) && checkString(lineArray[8])) {
 				addAddress();
 			}
 
-			if(lineArray.length > 9){
+			if (lineArray.length > 9) {
 				addPassport();
 			}
-			if(!isEmptyUser()){
+			if (!isEmptyUser()) {
 				users.add(user);
 			}
 		}
@@ -239,7 +248,7 @@ public class BankDIAConverterImpl implements UserConverter {
 	}
 
 	public boolean isEmptyUser(){
-		return user.getName() == null && user.getMiddleName() == null && user.getSurName() == null &&
+		return user.getFirstNames().isEmpty() && user.getMiddleNames().isEmpty() && user.getSurNames().isEmpty() &&
 			user.getRnokpp() == null;
 	}
 }

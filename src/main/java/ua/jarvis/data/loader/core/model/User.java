@@ -31,18 +31,6 @@ public class User extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(max = 50)
-	@Column(length = 50, name = "name")
-	private String name;
-
-	@Size(max = 50)
-	@Column(length = 50, name = "middle_name")
-	private String middleName;
-
-	@Size(max = 50)
-	@Column(length = 50, name = "sur_name")
-	private String surName;
-
 	@Size(max = 10)
 	@Column(length = 10, name = "rnokpp")
 	private String rnokpp;
@@ -64,6 +52,15 @@ public class User extends BaseEntity {
 
 	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private Photo photo;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+	private Set<FirstName> firstNames = new HashSet<>();
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+	private Set<MiddleName> middleNames = new HashSet<>();
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+	private Set<SurName> surNames = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(
@@ -112,6 +109,30 @@ public class User extends BaseEntity {
 	private Set<Address> individualEntrepreneurAddresses = new HashSet<>();
 
 	public User() {}
+
+	public Set<FirstName> getFirstNames() {
+		return firstNames;
+	}
+
+	public void setFirstNames(final Set<FirstName> firstNames) {
+		this.firstNames = firstNames;
+	}
+
+	public Set<MiddleName> getMiddleNames() {
+		return middleNames;
+	}
+
+	public void setMiddleNames(final Set<MiddleName> middleNames) {
+		this.middleNames = middleNames;
+	}
+
+	public Set<SurName> getSurNames() {
+		return surNames;
+	}
+
+	public void setSurNames(final Set<SurName> surNames) {
+		this.surNames = surNames;
+	}
 
 	public BooleanType getIndividualEntrepreneur() {
 		return individualEntrepreneur;
@@ -183,30 +204,6 @@ public class User extends BaseEntity {
 
 	public void setId(final Long id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	public void setMiddleName(final String midlName) {
-		this.middleName = midlName;
-	}
-
-	public String getSurName() {
-		return surName;
-	}
-
-	public void setSurName(final String surName) {
-		this.surName = surName;
 	}
 
 	public String getRnokpp() {
@@ -303,11 +300,27 @@ public class User extends BaseEntity {
 	public String toString() {
 		return "User{" +
 			"id=" + id +
-			", name='" + name + '\'' +
-			", midlName='" + middleName + '\'' +
-			", surName='" + surName + '\'' +
 			", rnokpp='" + rnokpp + '\'' +
-			", sex='" + sex + '\'' +
+			", sex=" + sex +
+			", illegalActions='" + illegalActions + '\'' +
+			", individualEntrepreneur=" + individualEntrepreneur +
+			", birthCertificate=" + birthCertificate +
+			", photo=" + photo +
+			", firstNames=" + firstNames +
+			", middleNames=" + middleNames +
+			", surNames=" + surNames +
+			", siblings=" + siblings +
+			", children=" + children +
+			", parents=" + parents +
+			", cars=" + cars +
+			", juridicalPersons=" + juridicalPersons +
+			", passports=" + passports +
+			", driverLicense=" + driverLicense +
+			", foreignPassports=" + foreignPassports +
+			", addresses=" + addresses +
+			", emails=" + emails +
+			", phones=" + phones +
+			", individualEntrepreneurAddresses=" + individualEntrepreneurAddresses +
 			'}';
 	}
 
