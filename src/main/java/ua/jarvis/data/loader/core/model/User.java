@@ -303,24 +303,9 @@ public class User extends BaseEntity {
 			", rnokpp='" + rnokpp + '\'' +
 			", sex=" + sex +
 			", illegalActions='" + illegalActions + '\'' +
-			", individualEntrepreneur=" + individualEntrepreneur +
-			", birthCertificate=" + birthCertificate +
-			", photo=" + photo +
 			", firstNames=" + firstNames +
 			", middleNames=" + middleNames +
 			", surNames=" + surNames +
-			", siblings=" + siblings +
-			", children=" + children +
-			", parents=" + parents +
-			", cars=" + cars +
-			", juridicalPersons=" + juridicalPersons +
-			", passports=" + passports +
-			", driverLicense=" + driverLicense +
-			", foreignPassports=" + foreignPassports +
-			", addresses=" + addresses +
-			", emails=" + emails +
-			", phones=" + phones +
-			", individualEntrepreneurAddresses=" + individualEntrepreneurAddresses +
 			'}';
 	}
 

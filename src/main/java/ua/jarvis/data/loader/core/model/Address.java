@@ -178,9 +178,7 @@ public class Address extends BaseEntity {
 			", district='" + district + '\'' +
 			", corpus='" + corpus + '\'' +
 			", other='" + other + '\'' +
-			", otherNum=" + otherNum +
-			", juridicalPersons=" + juridicalPersons +
-			", users=" + users +
+			", otherNum=" + otherNum + '\'' +
 			'}';
 	}
 
@@ -201,13 +199,11 @@ public class Address extends BaseEntity {
 			Objects.equals(district, address.district) &&
 			Objects.equals(corpus, address.corpus) &&
 			Objects.equals(other, address.other) &&
-			Objects.equals(otherNum, address.otherNum) &&
-			Objects.equals(juridicalPersons, address.juridicalPersons) &&
-			Objects.equals(users, address.users);
+			Objects.equals(otherNum, address.otherNum);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, region, city, street, homeNumber, flatNumber);
+		return Objects.hash(region, city, street, homeNumber, flatNumber, district, corpus, other, otherNum);
 	}
 }
