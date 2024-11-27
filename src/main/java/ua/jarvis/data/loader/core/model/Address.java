@@ -31,16 +31,16 @@ public class Address extends BaseEntity {
 	@Column(length = 50, name = "city")
 	private String city;
 
-	@Size(max = 50)
-	@Column(length = 50, name = "street")
+	@Size(max = 100)
+	@Column(length = 100, name = "street")
 	private String street;
 
-	@Size(max = 50)
-	@Column(length = 50, name = "home_number")
+	@Size(max = 10)
+	@Column(length = 10, name = "home_number")
 	private String homeNumber;
 
-	@Size(max = 50)
-	@Column(length = 50, name = "flat_number")
+	@Size(max = 10)
+	@Column(length = 10, name = "flat_number")
 	private String flatNumber;
 
 	@Size(max = 50)
@@ -51,8 +51,8 @@ public class Address extends BaseEntity {
 	@Column(length = 50, name = "corpus")
 	private String corpus;
 
-	@Size(max = 50)
-	@Column(length = 50, name = "other")
+	@Size(max = 100)
+	@Column(length = 100, name = "other")
 	private String other;
 
 	@Column(name = "other_num")

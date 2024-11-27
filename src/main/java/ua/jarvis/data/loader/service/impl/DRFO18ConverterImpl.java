@@ -8,6 +8,7 @@ import ua.jarvis.data.loader.core.model.FirstName;
 import ua.jarvis.data.loader.core.model.MiddleName;
 import ua.jarvis.data.loader.core.model.SurName;
 import ua.jarvis.data.loader.core.model.User;
+import ua.jarvis.data.loader.core.model.enums.BooleanType;
 import ua.jarvis.data.loader.core.model.enums.ConvertorType;
 
 import java.util.ArrayList;
@@ -62,8 +63,9 @@ public class DRFO18ConverterImpl extends AbstractUserConverter {
 			if (arrLength >= 10 && isValidString(lineArray[9])) {
 				addAddress(user, lineArray[9]);
 			}
-				//TODO зупинився на адресі далі іде: номер авто, вид авто ...
+
 			if (!isEmptyUser(user)) {
+				user.setIndividualEntrepreneur(BooleanType.UNKNOWN);
 				users.add(user);
 			}
 		}
@@ -72,16 +74,16 @@ public class DRFO18ConverterImpl extends AbstractUserConverter {
 	}
 
 	private void addBirthCertificate(final User user, final String dateLine){
-		final String[] dateParts = dateLine.split("-");
+		final String[] dateParts = dateLine.split("\\.");
 		final BirthCertificate certificate = new BirthCertificate();
 
-		if(dateParts.length == 1){
+		if(dateParts.length >= 1){
 			certificate.setDay(dateParts[0]);
 		}
-		if(dateParts.length == 2){
+		if(dateParts.length >= 2){
 			certificate.setMonth(dateParts[1]);
 		}
-		if(dateParts.length == 3){
+		if(dateParts.length >= 3){
 			certificate.setYear(dateParts[2]);
 		}
 

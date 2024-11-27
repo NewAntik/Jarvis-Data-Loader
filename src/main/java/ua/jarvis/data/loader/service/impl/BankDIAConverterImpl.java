@@ -11,6 +11,7 @@ import ua.jarvis.data.loader.core.model.Passport;
 import ua.jarvis.data.loader.core.model.Phone;
 import ua.jarvis.data.loader.core.model.SurName;
 import ua.jarvis.data.loader.core.model.User;
+import ua.jarvis.data.loader.core.model.enums.BooleanType;
 import ua.jarvis.data.loader.core.model.enums.ConvertorType;
 
 import java.time.LocalDate;
@@ -83,6 +84,7 @@ public class BankDIAConverterImpl extends AbstractUserConverter {
 			}
 
 			if (!isEmptyUser(user)) {
+				user.setIndividualEntrepreneur(BooleanType.UNKNOWN);
 				users.add(user);
 			}
 		}
